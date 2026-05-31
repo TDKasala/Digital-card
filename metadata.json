@@ -1,0 +1,8 @@
+{
+  "name": "SchoolConnect Africa Card",
+  "description": "Digital Business Card platform for SchoolConnect Africa staff.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
