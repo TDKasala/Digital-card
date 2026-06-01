@@ -28,6 +28,6 @@ export const staffData: Record<string, StaffMember> = {
     twitter: "https://twitter.com/landrykasala",
     bio: "Passionné par la transformation de l'EdTech en Afrique. Notre vision est d'apporter une plateforme de gestion scolaire moderne, adaptée au contexte africain, pour responsabiliser la prochaine génération.",
     avatarUrl: "/avatar.jpg",
-    logoUrl: "/logo.jpg"
+    logoUrl: "/logo.png"
   }
 };
