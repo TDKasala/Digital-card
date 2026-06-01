@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { staffData } from "../data/staff";
 import { QRCodeSVG } from "qrcode.react";
 import { downloadVCard } from "../utils/vcard";
+import { initAuth, googleSignIn, getAccessToken } from "../lib/auth";
 import { 
   Phone, 
   MessageCircle, 
@@ -14,7 +15,8 @@ import {
   Download,
   Share2,
   Calendar,
-  ChevronLeft
+  ChevronLeft,
+  UserPlus
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -61,6 +63,44 @@ export default function DigitalCard() {
     } else {
       navigator.clipboard.writeText(currentUrl);
       alert("Lien copié dans le presse-papiers !");
+    }
+  };
+
+  const handleSaveToGoogle = async () => {
+    try {
+      let token = await getAccessToken();
+      if (!token) {
+        const result = await googleSignIn();
+        if (result) token = result.accessToken;
+      }
+      if (!token) return;
+
+      const confirmed = window.confirm(`Voulez-vous ajouter ${staff.firstName} ${staff.lastName} à vos Google Contacts ?`);
+      if (!confirmed) return;
+
+      const response = await fetch('https://people.googleapis.com/v1/people:createContact', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          names: [{ givenName: staff.firstName, familyName: staff.lastName }],
+          emailAddresses: [{ value: staff.email, type: "work" }],
+          phoneNumbers: [{ value: staff.phone, type: "mobile" }],
+          organizations: [{ name: "SchoolConnect Africa", title: staff.title, type: "work" }]
+        })
+      });
+
+      if (!response.ok) throw new Error('Erreur API');
+      alert("Contact sauvegardé dans Google Contacts !");
+    } catch (err: any) {
+      if (err.message === 'CONFIG_MISSING') {
+        alert("L'intégration Google Contacts nécessite une configuration Firebase complète. Veuillez utiliser le bouton vCard en attendant.");
+        return;
+      }
+      console.error(err);
+      alert("Impossible d'enregistrer le contact.");
     }
   };
 
@@ -200,10 +240,15 @@ export default function DigitalCard() {
           </div>
           <div className="text-left flex-1">
             <p className="text-xs font-bold text-emerald-400 mb-0.5">Scanner pour Sauvegarder</p>
-            <p className="text-[10px] text-slate-400 leading-tight mb-2">Téléchargement immédiat de la vCard pour vos contacts.</p>
-            <button onClick={() => downloadVCard(staff)} className="text-[10px] uppercase font-black bg-emerald-500 hover:bg-emerald-400 transition-colors text-slate-950 px-3 py-1.5 rounded-full inline-flex items-center gap-1">
-              <Download className="w-3 h-3" /> Sauvegarder
-            </button>
+            <p className="text-[10px] text-slate-400 leading-tight mb-2">Sauvegardez ce contact dans votre téléphone ou Google Contacts.</p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button onClick={() => downloadVCard(staff)} className="flex-1 text-[10px] uppercase font-black bg-emerald-500 hover:bg-emerald-400 transition-colors text-slate-950 px-3 py-2 sm:py-1.5 rounded-full inline-flex items-center justify-center gap-1">
+                <Download className="w-3 h-3" /> vCard
+              </button>
+              <button onClick={handleSaveToGoogle} className="flex-1 text-[10px] uppercase font-black bg-white hover:bg-slate-200 transition-colors text-slate-900 px-3 py-2 sm:py-1.5 rounded-full inline-flex items-center justify-center gap-1">
+                <UserPlus className="w-3 h-3" /> Google
+              </button>
+            </div>
           </div>
         </motion.div>
 
