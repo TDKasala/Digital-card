@@ -27,6 +27,7 @@ export default function DigitalCard() {
   const staff = slug ? staffData[slug] : null;
   const [viewCount, setViewCount] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [isQrHovered, setIsQrHovered] = useState(false);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(currentUrl);
@@ -230,7 +231,11 @@ export default function DigitalCard() {
 
         {/* QR Code & VCard */}
         <motion.div variants={childVariants} className="mt-auto w-full flex items-center justify-between gap-4 bg-emerald-500/10 p-4 rounded-3xl border border-emerald-500/20 z-10">
-          <div className="relative shrink-0 select-none">
+          <div 
+            className="relative shrink-0 select-none cursor-pointer"
+            onMouseEnter={() => setIsQrHovered(true)}
+            onMouseLeave={() => setIsQrHovered(false)}
+          >
             {/* Soft glowing ambient background using a radial gradient */}
             <div className="absolute -inset-3 bg-[radial-gradient(circle,_rgba(16,185,129,0.45)_0%,_rgba(16, 185, 129,0)_70%)] rounded-full blur-md opacity-80 pointer-events-none"></div>
             
@@ -252,9 +257,25 @@ export default function DigitalCard() {
           <div className="text-left flex-1">
             <p className="text-xs font-bold text-emerald-400 mb-0.5">Scanner pour Sauvegarder</p>
             <p className="text-[10px] text-slate-400 leading-tight mb-2">Sauvegardez ce contact directement dans votre téléphone.</p>
-            <button onClick={() => downloadVCard(staff)} className="w-full text-[10px] uppercase font-black bg-emerald-500 hover:bg-emerald-400 transition-colors text-slate-950 px-3 py-2 rounded-full inline-flex items-center justify-center gap-1">
+            <motion.button 
+              onClick={() => downloadVCard(staff)} 
+              className="w-full text-[10px] uppercase font-black bg-emerald-500 hover:bg-emerald-400 transition-colors text-slate-950 px-3 py-2 rounded-full inline-flex items-center justify-center gap-1"
+              animate={isQrHovered ? {
+                y: [0, -4, 0, -3, 0, -1, 0],
+                rotate: [0, -3, 3, -2, 2, -1, 1, 0],
+                scale: [1, 1.05, 1.05, 1.05, 1.05, 1]
+              } : {
+                y: 0,
+                rotate: 0,
+                scale: 1
+              }}
+              transition={{
+                duration: 0.8,
+                ease: "easeInOut"
+              }}
+            >
               <Download className="w-3 h-3" /> Télécharger vCard
-            </button>
+            </motion.button>
           </div>
         </motion.div>
 
