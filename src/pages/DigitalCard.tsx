@@ -16,7 +16,9 @@ import {
   Share2,
   Calendar,
   ChevronLeft,
-  UserPlus
+  UserPlus,
+  Copy,
+  Check
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -24,6 +26,13 @@ export default function DigitalCard() {
   const { slug } = useParams<{ slug: string }>();
   const staff = slug ? staffData[slug] : null;
   const [viewCount, setViewCount] = useState(0);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(currentUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     if (slug && staff) {
@@ -129,12 +138,21 @@ export default function DigitalCard() {
         <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-600/20 blur-[80px] pointer-events-none"></div>
         <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald-600/20 blur-[80px] pointer-events-none"></div>
 
-        <button onClick={() => window.history.back()} className="absolute top-6 left-6 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition-colors z-20">
+        <button onClick={() => window.history.back()} className="absolute top-6 left-6 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition-colors z-20" title="Retour">
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <button onClick={handleShare} className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition-colors z-20">
-          <Share2 className="w-5 h-5" />
-        </button>
+        <div className="absolute top-6 right-6 flex gap-2 z-20">
+          <button 
+            onClick={handleCopyLink} 
+            className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition-colors relative"
+            title="Copier le lien"
+          >
+            {copied ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5" />}
+          </button>
+          <button onClick={handleShare} className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition-colors" title="Partager">
+            <Share2 className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Brand/Logo Section */}
         <div className="mt-14 flex items-center justify-center gap-2 mb-8 z-10 w-full relative">
@@ -201,54 +219,42 @@ export default function DigitalCard() {
         {/* Book Demo CTA */}
         <motion.div variants={childVariants} className="w-full mb-6 z-10">
           <a 
-            href="#" 
-            onClick={(e) => { e.preventDefault(); alert("La fonction de réservation arrive bientôt !"); }}
+            href="https://www.schoolconnectafrica.co.za/contact" 
+            target="_blank"
+            rel="noreferrer"
             className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2"
           >
             <Calendar className="w-4 h-4" /> Réserver une Démo Visuelle
           </a>
         </motion.div>
 
-        {/* Social Links */ }
-        <motion.div variants={childVariants} className="flex justify-center gap-4 w-full mb-6 z-10">
-          {staff.linkedin && (
-            <a href={staff.linkedin} target="_blank" rel="noreferrer" className="p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-slate-400 hover:text-white transition-all">
-              <Linkedin className="w-4 h-4" />
-            </a>
-          )}
-          {staff.twitter && (
-            <a href={staff.twitter} target="_blank" rel="noreferrer" className="p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-slate-400 hover:text-white transition-all">
-              <Twitter className="w-4 h-4" />
-            </a>
-          )}
-        </motion.div>
-
         {/* QR Code & VCard */}
         <motion.div variants={childVariants} className="mt-auto w-full flex items-center justify-between gap-4 bg-emerald-500/10 p-4 rounded-3xl border border-emerald-500/20 z-10">
-          <div className="w-16 h-16 bg-white p-1 rounded-xl shrink-0">
-             <div className="w-full h-full bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden relative">
-               <QRCodeSVG 
-                value={currentUrl}
-                size={80}
-                bgColor={"#0f172a"}
-                fgColor={"#ffffff"}
-                level={"L"}
-                includeMargin={false}
-                className="scale-[0.8]"
-              />
-             </div>
+          <div className="relative shrink-0 select-none">
+            {/* Soft glowing ambient background using a radial gradient */}
+            <div className="absolute -inset-3 bg-[radial-gradient(circle,_rgba(16,185,129,0.45)_0%,_rgba(16, 185, 129,0)_70%)] rounded-full blur-md opacity-80 pointer-events-none"></div>
+            
+            {/* Container with semi-transparent border and neon shadow glow */}
+            <div className="relative w-16 h-16 bg-white/10 backdrop-blur-md border border-emerald-400/40 p-1 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.25)] flex items-center justify-center">
+              <div className="w-full h-full bg-slate-950 rounded-lg flex items-center justify-center overflow-hidden relative">
+                <QRCodeSVG 
+                  value={currentUrl}
+                  size={80}
+                  bgColor={"#020617"} // Slate 950 matching
+                  fgColor={"#10b981"} // Emerald 500 for a stunning green glow effect
+                  level={"M"} // Medium level redundancy for extra reliability
+                  includeMargin={false}
+                  className="scale-[0.82]"
+                />
+              </div>
+            </div>
           </div>
           <div className="text-left flex-1">
             <p className="text-xs font-bold text-emerald-400 mb-0.5">Scanner pour Sauvegarder</p>
-            <p className="text-[10px] text-slate-400 leading-tight mb-2">Sauvegardez ce contact dans votre téléphone ou Google Contacts.</p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <button onClick={() => downloadVCard(staff)} className="flex-1 text-[10px] uppercase font-black bg-emerald-500 hover:bg-emerald-400 transition-colors text-slate-950 px-3 py-2 sm:py-1.5 rounded-full inline-flex items-center justify-center gap-1">
-                <Download className="w-3 h-3" /> vCard
-              </button>
-              <button onClick={handleSaveToGoogle} className="flex-1 text-[10px] uppercase font-black bg-white hover:bg-slate-200 transition-colors text-slate-900 px-3 py-2 sm:py-1.5 rounded-full inline-flex items-center justify-center gap-1">
-                <UserPlus className="w-3 h-3" /> Google
-              </button>
-            </div>
+            <p className="text-[10px] text-slate-400 leading-tight mb-2">Sauvegardez ce contact directement dans votre téléphone.</p>
+            <button onClick={() => downloadVCard(staff)} className="w-full text-[10px] uppercase font-black bg-emerald-500 hover:bg-emerald-400 transition-colors text-slate-950 px-3 py-2 rounded-full inline-flex items-center justify-center gap-1">
+              <Download className="w-3 h-3" /> Télécharger vCard
+            </button>
           </div>
         </motion.div>
 
