@@ -9,7 +9,7 @@ import DigitalCard from "./pages/DigitalCard";
 
 export default function App() {
   return (
-    <Router>
+    <Router basename="/Digital-card">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/card/:slug" element={<DigitalCard />} />
