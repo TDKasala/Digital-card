@@ -14,6 +14,8 @@ export interface StaffMember {
   logoUrl: string;
 }
 
+const base = import.meta.env.BASE_URL;
+
 export const staffData: Record<string, StaffMember> = {
   "landry-kasala": {
     slug: "landry-kasala",
@@ -27,8 +29,8 @@ export const staffData: Record<string, StaffMember> = {
     linkedin: "https://linkedin.com/in/landrykasala",
     twitter: "https://twitter.com/landrykasala",
     bio: "Passionné par la transformation de l'EdTech en Afrique. Notre vision est d'apporter une plateforme de gestion scolaire moderne, adaptée au contexte africain, pour responsabiliser la prochaine génération.",
-    avatarUrl: "/avatar.jpg",
-    logoUrl: "/logo.png"
+    avatarUrl: `${base}avatar.jpg`,
+    logoUrl: `${base}logo.png`
   },
   "luc-mulunga": {
     slug: "luc-mulunga",
@@ -40,7 +42,7 @@ export const staffData: Record<string, StaffMember> = {
     whatsapp: "+243976787166",
     website: "https://schoolconnectafrica.co.za",
     bio: "Consultant dévoué pour SchoolConnect Africa, coordonnant les initiatives éducatives dans les régions de Kolwezi et Likasi afin de renforcer l'accès à une gestion scolaire moderne en RDC.",
-    avatarUrl: "/avatar-luc-mulunga.jpg",
-    logoUrl: "/logo.png"
+    avatarUrl: `${base}avatar-luc-mulunga.jpg`,
+    logoUrl: `${base}logo.png`
   }
 };
