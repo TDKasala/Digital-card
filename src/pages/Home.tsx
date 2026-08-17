@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { staffData } from "../data/staff";
+import { staffData, organizations } from "../data/staff";
 
 export default function Home() {
   const staffArray = Object.values(staffData);
@@ -31,6 +31,7 @@ export default function Home() {
               <div className="flex-1">
                 <div className="leading-tight text-white">{staff.firstName} {staff.lastName}</div>
                 <div className="text-sm text-emerald-400 font-medium tracking-wide uppercase mt-0.5">{staff.title}</div>
+                <div className="text-xs text-slate-500 mt-0.5">{organizations[staff.orgSlug].name}</div>
               </div>
             </Link>
           ))}

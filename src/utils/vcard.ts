@@ -1,12 +1,13 @@
-import { StaffMember } from "../data/staff";
+import { StaffMember, organizations } from "../data/staff";
 
 export function generateVCard(staff: StaffMember): string {
+  const org = organizations[staff.orgSlug];
   // Use a minimal vcard structure
   return `BEGIN:VCARD
 VERSION:3.0
 N:${staff.lastName};${staff.firstName};;;
 FN:${staff.firstName} ${staff.lastName}
-ORG:SchoolConnect Africa
+ORG:${org.name}
 TITLE:${staff.title}
 TEL;TYPE=WORK,VOICE:${staff.phone}
 EMAIL;TYPE=WORK,INTERNET:${staff.email}

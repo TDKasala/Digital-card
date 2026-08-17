@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { staffData } from "../data/staff";
+import { staffData, organizations } from "../data/staff";
 import { QRCodeSVG } from "qrcode.react";
 import { downloadVCard } from "../utils/vcard";
 import { initAuth, googleSignIn, getAccessToken } from "../lib/auth";
@@ -57,6 +57,7 @@ export default function DigitalCard() {
     );
   }
 
+  const org = organizations[staff.orgSlug];
   const currentUrl = typeof window !== 'undefined' ? window.location.href : staff.website;
 
   const handleShare = async () => {
@@ -98,7 +99,7 @@ export default function DigitalCard() {
           names: [{ givenName: staff.firstName, familyName: staff.lastName }],
           emailAddresses: [{ value: staff.email, type: "work" }],
           phoneNumbers: [{ value: staff.phone, type: "mobile" }],
-          organizations: [{ name: "SchoolConnect Africa", title: staff.title, type: "work" }]
+          organizations: [{ name: org.name, title: staff.title, type: "work" }]
         })
       });
 
@@ -162,7 +163,7 @@ export default function DigitalCard() {
                <img src={staff.logoUrl} alt="Logo" className="w-full h-full object-cover mix-blend-multiply opacity-80" />
             </div>
           </div>
-          <span className="text-xs font-bold tracking-widest uppercase text-emerald-400">SchoolConnect Africa</span>
+          <span className="text-xs font-bold tracking-widest uppercase text-emerald-400">{org.name}</span>
         </div>
 
         {/* Profile Info Section */}
@@ -219,13 +220,13 @@ export default function DigitalCard() {
 
         {/* Book Demo CTA */}
         <motion.div variants={childVariants} className="w-full mb-6 z-10">
-          <a 
-            href="https://www.schoolconnectafrica.co.za/contact" 
+          <a
+            href={org.ctaUrl}
             target="_blank"
             rel="noreferrer"
             className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2"
           >
-            <Calendar className="w-4 h-4" /> Réserver une Démo Visuelle
+            <Calendar className="w-4 h-4" /> {org.ctaLabel}
           </a>
         </motion.div>
 
